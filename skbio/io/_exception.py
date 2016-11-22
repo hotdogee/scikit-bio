@@ -22,6 +22,11 @@ class UnrecognizedFormatError(FileFormatError):
     pass
 
 
+class EMBLFormatError(FileFormatError):
+    """Raised when a ``embl`` formatted file cannot be parsed."""
+    pass
+
+
 class GenBankFormatError(FileFormatError):
     """Raised when a ``genbank`` formatted file cannot be parsed."""
     pass
