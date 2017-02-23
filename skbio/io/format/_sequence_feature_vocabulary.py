@@ -43,7 +43,8 @@ def _yield_section(is_another_section, **kwargs):
     Parameters
     ----------
     is_another_section : callable
-        It takes a string as input and return a boolean indicating
+        The current line, current line index and the list of lines
+        are passed in as arguments and returns a boolean indicating
         a new section starts.
     kwargs : dict, optional
         Keyword arguments will be passed to `_line_generator`.
@@ -56,9 +57,9 @@ def _yield_section(is_another_section, **kwargs):
     '''
     def parser(lines):
         curr = []
-        for line in _line_generator(lines, **kwargs):
+        for i, line in enumerate(_line_generator(lines, **kwargs)):
             # if we find another, return the previous section
-            if is_another_section(line):
+            if is_another_section(line, i, lines):
                 if curr:
                     yield curr
                     curr = []
@@ -103,15 +104,16 @@ def _serialize_section_default(header, obj, indent=12):
         header=header, obj=obj, indent=indent)
 
 
-def _parse_feature_table(lines, length):
-    '''parse DDBJ/ENA/GenBank Feature Table.'''
+def _parse_feature_table(lines, length, feature_indent=' ' * 21):
+    '''parse DDBJ/ENA/GenBank Feature Table.
+    feature_indent
+    GenBank: the lines following header of each feature
+    are indented with 21 spaces.
+    '''
     imd = IntervalMetadata(length)
     # skip the 1st FEATURES line
     if lines[0].startswith('FEATURES'):
         lines = lines[1:]
-    # magic number 21: the lines following header of each feature
-    # are indented with 21 spaces.
-    feature_indent = ' ' * 21
     section_splitter = _yield_section(
         lambda x: not x.startswith(feature_indent),
         skip_blanks=True, strip=False)

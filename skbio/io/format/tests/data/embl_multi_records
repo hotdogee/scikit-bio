@@ -1,0 +1,150 @@
+ID   DP001174.2:4299692..4299764:ncRNA; SV 2; linear; genomic DNA; CON; VRT; 73 BP.
+XX
+PA   DP001174.2
+XX
+DT   15-MAR-2010 (Rel. 104, Created)
+DT   17-JUL-2010 (Rel. 105, Last updated, Version 3)
+XX
+DE   Zonotrichia albicollis (white-throated sparrow) mir-217
+XX
+KW   .
+XX
+OS   Zonotrichia albicollis (white-throated sparrow)
+OC   Eukaryota; Metazoa; Chordata; Craniata; Vertebrata; Euteleostomi;
+OC   Archelosauria; Archosauria; Dinosauria; Saurischia; Theropoda;
+OC   Coelurosauria; Aves; Neognathae; Passeriformes; Passerellidae; Zonotrichia.
+XX
+RN   [1]
+RA   Benjamin B., Blakesley R.W., Bouffard G.G., Brooks S., Chodroff R., Chu G.,
+RA   Chub I., Coleman H., Fuksenko T., Gestole M., Gregory M., Guan X.,
+RA   Gupta J., Gurson N., Han J., Hansen N., Hargrove A., Hines-Harris K.,
+RA   Ho S.-L., Hu P., Hurle B., Idol J.R., Johnson T., Kwong P., Lee-Lin S.-Q.,
+RA   Legaspi R., Lovett S., Madden M., Maduro Q.L., Maduro V.B., Margulies E.H.,
+RA   Masiello C., Maskeri B., McDowell J., Montemayor C., Mullikin J.C.,
+RA   Myrick J., Palumbo A., Park M., Prasad A., Ramsahoye C., Reddix-Dugue N.,
+RA   Riebow N., Schandler K., Schmidt B., Schueler M.G., Sison C., Smith L.,
+RA   Stantripop S., Thomas J.W., Thomas P.J., Tsipouri V., Young A., Green E.D.;
+RT   "NISC Comparative Sequencing Initiative";
+RL   Unpublished.
+XX
+RN   [2]
+RA   Green E.D.;
+RT   ;
+RL   Submitted (12-MAR-2010) to the INSDC.
+RL   NIH Intramural Sequencing Center, 5625 Fishers Lane, Rockville, MD 20852,
+RL   USA
+XX
+RN   [3]
+RA   Green E.D.;
+RT   ;
+RL   Submitted (15-JUL-2010) to the INSDC.
+RL   NIH Intramural Sequencing Center, 5625 Fishers Lane, Rockville, MD 20852,
+RL   USA
+XX
+DR   MD5; 52b5258b5097decfb9382850ac8305ba.
+XX
+CC   On Jul 15, 2010 this sequence version replaced gi:290965794.
+CC   -------------- Genome Center
+CC        Center: NIH Intramural Sequencing Center
+CC        Center code: NISC
+CC        Web site: http://www.nisc.nih.gov
+CC        Contact: nisc_zoo@nhgri.nih.gov
+CC   All clones contained in this assembly were sequenced by the
+CC   NIH Intramural Sequencing Center (NISC).  This multi-clone
+CC   DNA sequence was assembled and annotated by NISC staff.
+XX
+FH   Key             Location/Qualifiers
+FH
+FT   source          1..73
+FT                   /organism="Zonotrichia albicollis"
+FT                   /chromosome="2"
+FT                   /mol_type="genomic DNA"
+FT                   /sex="female"
+FT                   /haplotype="ZAL2M"
+FT                   /clone_lib="CH264"
+FT                   /db_xref="taxon:44394"
+FT   ncRNA           DP001174.2:4299692..4299764
+FT                   /gene="MIR217"
+FT                   /product="mir-217"
+FT                   /note="ortholog of zebra finch tgu-mir-217"
+FT                   /ncRNA_class="miRNA"
+XX
+SQ   Sequence 73 BP; 22 A; 18 C; 12 G; 21 T; 0 other;
+     atgtcgcaga tactgcatca ggaactgatt ggataataat cactcaccat cagttcctaa        60
+     tgcattgcct tca                                                           73
+//
+ID   DP001174.2:8412571..8412657:ncRNA; SV 2; linear; genomic DNA; CON; VRT; 87 BP.
+XX
+PA   DP001174.2
+XX
+DT   15-MAR-2010 (Rel. 104, Created)
+DT   17-JUL-2010 (Rel. 105, Last updated, Version 3)
+XX
+DE   Zonotrichia albicollis (white-throated sparrow) mir-1329
+XX
+KW   .
+XX
+OS   Zonotrichia albicollis (white-throated sparrow)
+OC   Eukaryota; Metazoa; Chordata; Craniata; Vertebrata; Euteleostomi;
+OC   Archelosauria; Archosauria; Dinosauria; Saurischia; Theropoda;
+OC   Coelurosauria; Aves; Neognathae; Passeriformes; Passerellidae; Zonotrichia.
+XX
+RN   [1]
+RA   Benjamin B., Blakesley R.W., Bouffard G.G., Brooks S., Chodroff R., Chu G.,
+RA   Chub I., Coleman H., Fuksenko T., Gestole M., Gregory M., Guan X.,
+RA   Gupta J., Gurson N., Han J., Hansen N., Hargrove A., Hines-Harris K.,
+RA   Ho S.-L., Hu P., Hurle B., Idol J.R., Johnson T., Kwong P., Lee-Lin S.-Q.,
+RA   Legaspi R., Lovett S., Madden M., Maduro Q.L., Maduro V.B., Margulies E.H.,
+RA   Masiello C., Maskeri B., McDowell J., Montemayor C., Mullikin J.C.,
+RA   Myrick J., Palumbo A., Park M., Prasad A., Ramsahoye C., Reddix-Dugue N.,
+RA   Riebow N., Schandler K., Schmidt B., Schueler M.G., Sison C., Smith L.,
+RA   Stantripop S., Thomas J.W., Thomas P.J., Tsipouri V., Young A., Green E.D.;
+RT   "NISC Comparative Sequencing Initiative";
+RL   Unpublished.
+XX
+RN   [2]
+RA   Green E.D.;
+RT   ;
+RL   Submitted (12-MAR-2010) to the INSDC.
+RL   NIH Intramural Sequencing Center, 5625 Fishers Lane, Rockville, MD 20852,
+RL   USA
+XX
+RN   [3]
+RA   Green E.D.;
+RT   ;
+RL   Submitted (15-JUL-2010) to the INSDC.
+RL   NIH Intramural Sequencing Center, 5625 Fishers Lane, Rockville, MD 20852,
+RL   USA
+XX
+DR   MD5; b512a71e7d3adbed5c92139da3ec06ee.
+XX
+CC   On Jul 15, 2010 this sequence version replaced gi:290965794.
+CC   -------------- Genome Center
+CC        Center: NIH Intramural Sequencing Center
+CC        Center code: NISC
+CC        Web site: http://www.nisc.nih.gov
+CC        Contact: nisc_zoo@nhgri.nih.gov
+CC   All clones contained in this assembly were sequenced by the
+CC   NIH Intramural Sequencing Center (NISC).  This multi-clone
+CC   DNA sequence was assembled and annotated by NISC staff.
+XX
+FH   Key             Location/Qualifiers
+FH
+FT   source          1..87
+FT                   /organism="Zonotrichia albicollis"
+FT                   /chromosome="2"
+FT                   /mol_type="genomic DNA"
+FT                   /sex="female"
+FT                   /haplotype="ZAL2M"
+FT                   /clone_lib="CH264"
+FT                   /db_xref="taxon:44394"
+FT   ncRNA           DP001174.2:8412571..8412657
+FT                   /gene="MIR1329"
+FT                   /product="mir-1329"
+FT                   /note="ortholog of zebra finch tgu-mir-1329"
+FT                   /ncRNA_class="miRNA"
+XX
+SQ   Sequence 87 BP; 27 A; 19 C; 17 G; 24 T; 0 other;
+     tcaagtcata gggatatcgt gatcaagcta cgaggttgtt acttgagaaa tccatcgtaa        60
+     cctgatcact gtatctctac aaccaga                                            87
+//

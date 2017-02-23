@@ -198,8 +198,8 @@ from skbio.util import TestRunner
 
 from ._warning import FormatIdentificationWarning, ArgumentOverrideWarning
 from ._exception import (UnrecognizedFormatError, FileFormatError,
-                         BLAST7FormatError, ClustalFormatError,
-                         FASTAFormatError, GenBankFormatError, IOSourceError,
+                         BLAST7FormatError, ClustalFormatError, IOSourceError,
+                         FASTAFormatError, GenBankFormatError, EMBLFormatError,
                          FASTQFormatError, LSMatFormatError, NewickFormatError,
                          OrdinationFormatError, PhylipFormatError,
                          QSeqFormatError, QUALFormatError,
@@ -218,6 +218,7 @@ __all__ = ['write', 'read', 'sniff', 'open', 'io_registry', 'create_format',
            'FASTAFormatError',
            'FASTQFormatError',
            'GenBankFormatError',
+           'EMBLFormatError',
            'LSMatFormatError',
            'NewickFormatError',
            'OrdinationFormatError',
@@ -241,6 +242,7 @@ import_module('skbio.io.format.ordination')
 import_module('skbio.io.format.phylip')
 import_module('skbio.io.format.qseq')
 import_module('skbio.io.format.genbank')
+import_module('skbio.io.format.embl')
 import_module('skbio.io.format.stockholm')
 
 # This is meant to be a handy indicator to the user that they have done
