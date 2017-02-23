@@ -356,8 +356,32 @@ Now we can read it as ``DNA`` object:
 >>> dna_seq = DNA.read(eb)
 >>> dna_seq
 DNA
------------------------------------------------------------------
+----------------------------------------------------------------------
 Metadata:
+    'AC': <class 'list'>
+    'DE': <class 'list'>
+    'DR': <class 'list'>
+    'DT': <class 'list'>
+    'ID': <class 'dict'>
+    'KW': <class 'list'>
+    'OC': <class 'list'>
+    'OS': <class 'list'>
+    'RN': <class 'list'>
+    'SQ': <class 'dict'>
+Interval metadata:
+    3 interval features
+Stats:
+    length: 1859
+    has gaps: False
+    has degenerates: False
+    has definites: True
+    GC-content: 35.99%
+----------------------------------------------------------------------
+0    AAACAAACCA AATATGGATT TTATTGTAGC CATATTTGCT CTGTTTGTTA TTAGCTCATT
+60   CACAATTACT TCCACAAATG CAGTTGAAGC TTCTACTCTT CTTGACATAG GTAACCTGAG
+...
+1740 AGAAGCTATG ATCATAACTA TAGGTTGATC CTTCATGTAT CAGTTTGATG TTGAGAATAC
+1800 TTTGAATTAA AAGTCTTTTT TTATTTTTTT AAAAAAAAAA AAAAAAAAAA AAAAAAAAA
 
 
 Since this is a riboswitch molecule, we may want to read it as
@@ -368,15 +392,35 @@ the sequence, we can read it as ``RNA`` by converting ``t`` to ``u``:
 >>> rna_seq = RNA.read(eb)
 >>> rna_seq
 RNA
------------------------------------------------------------------
+----------------------------------------------------------------------
 Metadata:
+    'AC': <class 'list'>
+    'DE': <class 'list'>
+    'DR': <class 'list'>
+    'DT': <class 'list'>
+    'ID': <class 'dict'>
+    'KW': <class 'list'>
+    'OC': <class 'list'>
+    'OS': <class 'list'>
+    'RN': <class 'list'>
+    'SQ': <class 'dict'>
+Interval metadata:
+    3 interval features
+Stats:
+    length: 1859
+    has gaps: False
+    has degenerates: False
+    has definites: True
+    GC-content: 35.99%
+----------------------------------------------------------------------
+0    AAACAAACCA AAUAUGGAUU UUAUUGUAGC CAUAUUUGCU CUGUUUGUUA UUAGCUCAUU
+60   CACAAUUACU UCCACAAAUG CAGUUGAAGC UUCUACUCUU CUUGACAUAG GUAACCUGAG
+...
+1740 AGAAGCUAUG AUCAUAACUA UAGGUUGAUC CUUCAUGUAU CAGUUUGAUG UUGAGAAUAC
+1800 UUUGAAUUAA AAGUCUUUUU UUAUUUUUUU AAAAAAAAAA AAAAAAAAAA AAAAAAAAA
 
 >>> rna_seq == dna_seq.transcribe()
 True
-
->>> with io.StringIO() as fh:
-...     print(dna_seq.write(fh, format='embl').getvalue())
-<BLANKLINE>
 
 References
 ----------
