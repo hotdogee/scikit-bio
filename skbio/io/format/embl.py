@@ -440,7 +440,7 @@ _HEADERS = [('ID', 'ID'),  # identification            (begins each entry; 1 per
 @embl.sniffer()
 def _embl_sniffer(fh):
     # check the 1st real line is a valid ID line
-    print('embl.sniffer')
+    #print('embl.sniffer')
     if _too_many_blanks(fh, 5):
         return False, {}
     try:

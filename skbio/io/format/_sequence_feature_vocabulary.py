@@ -115,7 +115,7 @@ def _parse_feature_table(lines, length, feature_indent=' ' * 21):
     if lines[0].startswith('FEATURES'):
         lines = lines[1:]
     section_splitter = _yield_section(
-        lambda x: not x.startswith(feature_indent),
+        lambda x, i, l: not x.startswith(feature_indent),
         skip_blanks=True, strip=False)
 
     for section in section_splitter(lines):
@@ -137,7 +137,7 @@ def _parse_single_feature(lines, imd):
     # each component of a feature starts with '/', except the 1st
     # component of location.
     section_splitter = _yield_section(
-        lambda x: x.startswith('/'), strip=True)
+        lambda x, i, l: x.startswith('/'), strip=True)
     section_iter = section_splitter(lines)
 
     # 1st section is location

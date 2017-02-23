@@ -456,7 +456,7 @@ def _parse_single_genbank(chunks):
     sequence = ''
     # each section starts with a HEADER without indent.
     section_splitter = _yield_section(
-        lambda x: not x[0].isspace(), strip=False)
+        lambda x, i, l: not x[0].isspace(), strip=False)
     for section in section_splitter(chunks):
         header = section[0].split(None, 1)[0]
         parser = _PARSER_TABLE.get(
@@ -601,7 +601,7 @@ def _parse_reference(lines):
     # are at least indented with 11 spaces.
     feature_indent = ' ' * 11
     section_splitter = _yield_section(
-        lambda x: not x.startswith(feature_indent),
+        lambda x, i, l: not x.startswith(feature_indent),
         skip_blanks=True, strip=False)
     for section in section_splitter(lines):
         label, data = _parse_section_default(
@@ -641,7 +641,7 @@ def _parse_source(lines):
     # are at least indented with 11 spaces.
     feature_indent = ' ' * 11
     section_splitter = _yield_section(
-        lambda x: not x.startswith(feature_indent),
+        lambda x, i, l: not x.startswith(feature_indent),
         skip_blanks=True, strip=False)
     # SOURCE line is not informative; skip it
     _, organism = list(section_splitter(lines))
