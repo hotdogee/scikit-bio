@@ -1,5 +1,0 @@
-// Place your settings in this file to overwrite default and user settings.
-{
-    // Provider for formatting. Possible options include 'autopep8' and 'yapf'.
-    "python.formatting.provider": "yapf"
-}
