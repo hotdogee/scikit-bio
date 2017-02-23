@@ -996,7 +996,7 @@ def _parse_sq(lines):
             "Could not parse the SQ line:\n%s" % line)
     summary = dict([(k, int(v)) for k, v in matches.groupdict().items()])
     # remove the base number at the end of each data line
-    sequence = ''.join([line.split()[:-1] for line in lines[1:]])
+    sequence = ''.join(chain(*[line.split()[:-1] for line in lines[1:]]))
     return (summary, sequence)
 
 def _parse_co(lines):
