@@ -556,8 +556,8 @@ def _parse_single_embl(chunks):
 
     # each section starts with a different HEADER.
     section_splitter = _yield_section(
-        lambda x, i, l: not x[0].isspace() or
-        (i > 0 and _header_section(x[:2]) != _header_section(l[i - 1][:2])),
+        lambda x, i, l: (not x[0].isspace()) and 
+        (i > 0 and (_header_section(x[:2]) != _header_section(l[i - 1][:2]))),
         strip=False)
 
     for section in section_splitter(chunks):
