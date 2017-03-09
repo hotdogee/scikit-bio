@@ -1174,7 +1174,7 @@ _SERIALIZER_TABLE = {
     'PR': _serialize_pr,
     'DT': _serialize_line_list,
     'DE': _serialize_line_list,
-    'KW': _serialize_kw,
+    'KW': _serialize_token_list,
     'OS': _serialize_os,
     'OC': _serialize_oc,
     'OG': _serialize_og,
