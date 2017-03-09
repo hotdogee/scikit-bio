@@ -748,7 +748,7 @@ def _serialize_id(header, obj, indent=5):
     kwargs = {k: v or '' for k, v in obj.items()}
     
     return ('{header:<{indent}}{accession}; SV {seq_version}; {topology}; '
-            '{mol_type}; {data_class}; {tax_division}; {size} BP.\nXX\n').format(
+            '{mol_type}; {data_class}; {tax_division}; {size} BP.\n').format(
                 header=header, indent=indent, **kwargs)
 
 
@@ -774,17 +774,6 @@ def _parse_ac(lines):
                 for line in lines]))
 
 
-def _serialize_ac(header, obj, ind=5):
-    '''Serialize AC.
-
-    Parameters
-    ----------
-    obj : list
-    '''
-    prefix = '{header:<{indent}}'.format(header=header, indent=ind)
-    return indent(fill('; '.join(obj), width=80-ind), prefix) + ';\nXX\n'
-
-
 def _parse_pr(lines):
     '''Parse PR line. (0 or 1 per entry)
     The PR (PRoject) line shows the International Nucleotide Sequence Database
@@ -805,15 +794,15 @@ def _parse_pr(lines):
     return lines[0][5:].strip().rstrip(';')
 
 
-def _serialize_pr(header, obj, indent=5):
-    '''Serialize PR.
+def _serialize_single_line(header, obj, indent=5, spacer_line='XX\n'):
+    '''Serialize PR, OG.
 
     Parameters
     ----------
     obj : str
     '''
-    return '{header:<{indent}}{obj};\nXX\n'.format(
-        header=header, obj=obj, indent=indent)
+    return '{spacer_line}{header:<{indent}}{obj};\n'.format(
+        header=header, obj=obj, indent=indent, spacer_line=spacer_line)
 
 
 def _parse_dt(lines):
@@ -840,15 +829,15 @@ def _parse_dt(lines):
 
 
 def _serialize_line_list(header, obj, ind=5):
-    '''Serialize DT, DE.
+    '''Serialize DT, DE, OS.
 
     Parameters
     ----------
     obj : list
     '''
+    yield 'XX\n'
     for info in obj:
         yield '{header:<{indent}}{info}\n'.format(header=header, indent=ind, info=info)
-    yield 'XX\n'
 
 
 def _parse_de(lines):
@@ -897,8 +886,8 @@ def _parse_kw(lines):
                 for line in lines]))
 
 
-def _serialize_token_list(header, obj, ind=5):
-    '''Serialize KW.
+def _serialize_token_list(header, obj, ind=5, spacer_line='XX\n', stop_char='.'):
+    '''Serialize AC, KW, OC.
 
     Parameters
     ----------
@@ -906,7 +895,7 @@ def _serialize_token_list(header, obj, ind=5):
     '''
     max_len = 80
     prefix = '{header:<{indent}}'.format(header=header, indent=ind)
-    yield prefix
+    yield spacer_line + prefix
     curr_len = len(prefix)
     tokens = []
     for token in obj:
@@ -920,7 +909,7 @@ def _serialize_token_list(header, obj, ind=5):
             yield '{};\n{}'.format('; '.join(tokens), prefix)
             tokens = [token]
             curr_len = len(prefix) + len(token) + 1 # semicolon
-    yield '{}.\nXX\n'.format('; '.join(tokens))
+    yield '{}{}\n'.format('; '.join(tokens), stop_char)
 
 
 def _parse_os(lines):
@@ -1170,14 +1159,14 @@ _PARSER_TABLE = {
 
 _SERIALIZER_TABLE = {
     'ID': _serialize_id,
-    'AC': _serialize_ac,
-    'PR': _serialize_pr,
+    'AC': partial(_serialize_token_list, stop_char=';'),
+    'PR': _serialize_single_line,
     'DT': _serialize_line_list,
     'DE': _serialize_line_list,
     'KW': _serialize_token_list,
-    'OS': _serialize_os,
-    'OC': _serialize_oc,
-    'OG': _serialize_og,
+    'OS': _serialize_line_list,
+    'OC': partial(_serialize_token_list, spacer_line=''),
+    'OG': partial(_serialize_single_line, spacer_line=''),
     'RN': _serialize_rn, # includes RN, RC, RP, RX, RG, RA, RT, RL
     'DR': _serialize_dr,
     'CC': _serialize_cc,
