@@ -444,6 +444,7 @@ import re
 from functools import partial
 from itertools import chain
 from collections import OrderedDict
+from textwrap import fill, indent
 
 from skbio.io import create_format, EMBLFormatError
 from skbio.io.format._base import (
@@ -594,6 +595,7 @@ _HEADER_SECTION = dict(_HEADERS)
 def _header_section(header):
     return _HEADER_SECTION.get(header, header)
 
+
 def _parse_single_embl(chunks):
     metadata = {}
     interval_metadata = None
@@ -680,6 +682,7 @@ def _serialize_single_embl(obj, fh):
         fh.write(s)
     fh.write('//\n')
 
+
 def _parse_id(lines):
     '''Parse ID line.
     
@@ -733,6 +736,22 @@ def _parse_id(lines):
     res['size'] = int(res['size'])
     return res
 
+
+def _serialize_id(header, obj, indent=5):
+    '''Serialize ID line.
+
+    Parameters
+    ----------
+    obj : dict
+    '''
+    # use 'or' to convert None to ''
+    kwargs = {k: v or '' for k, v in obj.items()}
+    
+    return ('{header:<{indent}}{accession}; SV {seq_version}; {topology}; '
+            '{mol_type}; {data_class}; {tax_division}; {size} BP.\nXX\n').format(
+                header=header, indent=indent, **kwargs)
+
+
 def _parse_ac(lines):
     '''Parse AC line. (>=1 per entry)
     The AC (ACcession number) line lists the accession numbers associated with 
@@ -774,6 +793,7 @@ def _parse_pr(lines):
             "Expected 0 or 1 PR lines, found {:d}.".format(len(line)))
     return lines[0][5:].strip().rstrip(';')
 
+
 def _parse_dt(lines):
     '''Parse DT line. (2 per entry)
     The DT (DaTe) line shows when an entry first appeared in the database and
@@ -795,6 +815,7 @@ def _parse_dt(lines):
         raise EMBLFormatError(
             "Expected 2 DT lines, found {:d}.".format(len(lines)))
     return [line[5:] for line in lines]
+
 
 def _parse_de(lines):
     '''Parse DE line. (>=1 per entry)
@@ -841,6 +862,7 @@ def _parse_kw(lines):
         chain(*[[ac.strip().rstrip('.') for ac in line[5:].split(';')]
                 for line in lines]))
 
+
 def _parse_os(lines):
     '''Parse OS line. (>=1 per entry)
     The OS (Organism Species) line specifies the preferred scientific name of
@@ -886,6 +908,7 @@ def _parse_oc(lines):
         chain(*[[ac.strip().rstrip('.') for ac in line[5:].split(';')]
                 for line in lines]))
 
+
 def _parse_og(lines):
     '''Parse OG line. (0 or 1 per entry)
     The OG (OrGanelle) linetype indicates the sub-cellular location of non-nuclear
@@ -906,6 +929,7 @@ def _parse_og(lines):
         raise EMBLFormatError(
             "Expected 0 or 1 OG lines, found {:d}.".format(len(line)))
     return lines[0][5:].strip()
+
 
 def _parse_rn(lines):
     '''The Reference (RN, RC, RP, RX, RG, RA, RT, RL) Lines
@@ -942,6 +966,7 @@ def _parse_rn(lines):
         result[code].append(info)
     return result
 
+
 def _parse_dr(lines):
     '''Parse DR line. (>=0 per entry)
     The DR (Database Cross-reference) line cross-references other databases which
@@ -959,6 +984,7 @@ def _parse_dr(lines):
     '''
     return [[t.rstrip(';.') for t in line[5:].split()] for line in lines]
 
+
 def _parse_cc(lines):
     '''Parse CC line. (>=0 per entry)
     CC lines are free text comments about the entry, and may be used to convey 
@@ -971,6 +997,7 @@ def _parse_cc(lines):
     .. [1] ftp://ftp.ebi.ac.uk/pub/databases/embl/doc/usrman.txt
     '''
     return [line[5:] for line in lines]
+
 
 def _parse_as(lines):
     '''Parse AS line. (0 or >=1 per entry)
@@ -992,6 +1019,7 @@ def _parse_as(lines):
     .. [1] ftp://ftp.ebi.ac.uk/pub/databases/embl/doc/usrman.txt
     '''
     return [line[5:].split() for line in lines]
+
 
 def _parse_sq(lines):
     '''Parse SQ line. (1 per entry)
@@ -1034,6 +1062,7 @@ def _parse_sq(lines):
     sequence = ''.join(chain(*[line.split()[:-1] for line in lines[1:]]))
     return (summary, sequence)
 
+
 def _parse_co(lines):
     '''Parse CO line. (0 or >=1 per entry)
     Con(structed) sequences in the CON data classes represent complete
@@ -1058,7 +1087,6 @@ def _parse_co(lines):
     .. [1] ftp://ftp.ebi.ac.uk/pub/databases/embl/doc/usrman.txt
     '''
     return [line[5:] for line in lines]
-
 
 
 _PARSER_TABLE = {
