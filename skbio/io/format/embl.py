@@ -839,8 +839,8 @@ def _parse_dt(lines):
     return [line[5:] for line in lines]
 
 
-def _serialize_dt(header, obj, ind=5):
-    '''Serialize DT.
+def _serialize_line_list(header, obj, ind=5):
+    '''Serialize DT, DE.
 
     Parameters
     ----------
@@ -893,8 +893,34 @@ def _parse_kw(lines):
     .. [1] ftp://ftp.ebi.ac.uk/pub/databases/embl/doc/usrman.txt
     '''
     return list(
-        chain(*[[ac.strip().rstrip('.') for ac in line[5:].split(';')]
+        chain(*[[ac.strip().rstrip('.') for ac in line[5:].split(';') if ac]
                 for line in lines]))
+
+
+def _serialize_token_list(header, obj, ind=5):
+    '''Serialize KW.
+
+    Parameters
+    ----------
+    obj : list
+    '''
+    max_len = 80
+    prefix = '{header:<{indent}}'.format(header=header, indent=ind)
+    yield prefix
+    curr_len = len(prefix)
+    tokens = []
+    for token in obj:
+        if not tokens:
+            tokens.append(token)
+            curr_len = curr_len + len(token) + 1 # semicolon
+        elif (curr_len + len(token) + 2) <= max_len:
+            tokens.append(token)
+            curr_len = curr_len + len(token) + 2 # space and semicolon
+        else: # current token goes into next line
+            yield '{};\n{}'.format('; '.join(tokens), prefix)
+            tokens = [token]
+            curr_len = len(prefix) + len(token) + 1 # semicolon
+    yield '{}.\nXX\n'.format('; '.join(tokens))
 
 
 def _parse_os(lines):
@@ -1146,8 +1172,8 @@ _SERIALIZER_TABLE = {
     'ID': _serialize_id,
     'AC': _serialize_ac,
     'PR': _serialize_pr,
-    'DT': _serialize_dt,
-    'DE': _serialize_de,
+    'DT': _serialize_line_list,
+    'DE': _serialize_line_list,
     'KW': _serialize_kw,
     'OS': _serialize_os,
     'OC': _serialize_oc,
