@@ -1007,13 +1007,32 @@ def _parse_rn(lines):
     .. [1] ftp://ftp.ebi.ac.uk/pub/databases/embl/doc/usrman.txt
     '''
     result = OrderedDict()
-    result['RN'] = lines[0][5:]
+    result['RN'] = lines[0][5:].strip()
     for line in lines[1:]:
-        code, info = line[:2], line[5:]
+        code, info = line[:2], line[5:].strip()
         if code not in result:
             result[code] = []
         result[code].append(info)
     return result
+
+
+def _serialize_rn(header, obj, ind=5):
+    '''Serialize DT, DE, OS.
+
+    Parameters
+    ----------
+    obj : list
+    '''
+    for ref in obj:
+        yield 'XX\n'
+        for code, data in ref.items():
+            if code == 'RN':
+                yield '{code:<{indent}}{info}\n'.format(
+                    code=code, indent=ind, info=data)
+            else:
+                for info in data:
+                    yield '{code:<{indent}}{info}\n'.format(
+                        code=code, indent=ind, info=info)
 
 
 def _parse_dr(lines):
@@ -1168,11 +1187,11 @@ _SERIALIZER_TABLE = {
     'OC': partial(_serialize_token_list, spacer_line=''),
     'OG': partial(_serialize_single_line, spacer_line=''),
     'RN': _serialize_rn, # includes RN, RC, RP, RX, RG, RA, RT, RL
-    'DR': _serialize_dr,
-    'CC': _serialize_cc,
-    'AS': _serialize_as,
-    'FT': _serialize_feature_table,
-    'SQ': _serialize_sq,
-    'CO': _serialize_co
+    # 'DR': _serialize_dr,
+    # 'CC': _serialize_cc,
+    # 'AS': _serialize_as,
+    # 'FT': _serialize_feature_table,
+    # 'SQ': _serialize_sq,
+    # 'CO': _serialize_co
 }
 
