@@ -1123,8 +1123,9 @@ def _serialize_as(header, obj, ind=5):
     '''
     yield 'XX\nAH   LOCAL_SPAN      PRIMARY_IDENTIFIER   PRIMARY_SPAN   COMP\n'
     for ref in obj:
-        yield '{header:<{indent}}{}{}{}{}\n'.format(
-            header=header, indent=ind, info='; '.join(ref))
+        yield ('{header:<{indent}}{local_span:<16}'
+               '{primary_identifier:<21}{primary_span:<15}{comp}\n').format(
+            header=header, indent=ind, **ref)
 
 
 def _parse_sq(lines):
