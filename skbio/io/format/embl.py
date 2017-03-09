@@ -839,6 +839,18 @@ def _parse_dt(lines):
     return [line[5:] for line in lines]
 
 
+def _serialize_dt(header, obj, ind=5):
+    '''Serialize DT.
+
+    Parameters
+    ----------
+    obj : list
+    '''
+    for info in obj:
+        yield '{header:<{indent}}{info}\n'.format(header=header, indent=ind, info=info)
+    yield 'XX\n'
+
+
 def _parse_de(lines):
     '''Parse DE line. (>=1 per entry)
     The description is given in ordinary English and is free-format. Often, more
