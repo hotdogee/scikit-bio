@@ -829,7 +829,7 @@ def _parse_dt(lines):
 
 
 def _serialize_line_list(header, obj, ind=5):
-    '''Serialize DT, DE, OS.
+    '''Serialize DT, DE, OS, CC.
 
     Parameters
     ----------
@@ -1017,7 +1017,7 @@ def _parse_rn(lines):
 
 
 def _serialize_rn(header, obj, ind=5):
-    '''Serialize DT, DE, OS.
+    '''Serialize Reference (RN, RC, RP, RX, RG, RA, RT, RL) Lines.
 
     Parameters
     ----------
@@ -1053,6 +1053,19 @@ def _parse_dr(lines):
     return [[t.rstrip(';.') for t in line[5:].split()] for line in lines]
 
 
+def _serialize_dr(header, obj, ind=5):
+    '''Serialize DR.
+
+    Parameters
+    ----------
+    obj : list
+    '''
+    yield 'XX\n'
+    for ref in obj:
+        yield '{header:<{indent}}{info}.\n'.format(
+            header=header, indent=ind, info='; '.join(ref))
+
+
 def _parse_cc(lines):
     '''Parse CC line. (>=0 per entry)
     CC lines are free text comments about the entry, and may be used to convey 
@@ -1079,14 +1092,39 @@ def _parse_as(lines):
     Example:
     AH   LOCAL_SPAN     PRIMARY_IDENTIFIER     PRIMARY_SPAN     COMP
     AS   1-426          AC004528.1             18665-19090         
-    AS   427-526        AC001234.2             1-100            c
+    AS   427-526        AC001234.2             1-100            c 
     AS   527-1000       TI55475028             not_available
 
     References
     ----------
     .. [1] ftp://ftp.ebi.ac.uk/pub/databases/embl/doc/usrman.txt
     '''
-    return [line[5:].split() for line in lines]
+    pattern = (r'AS   '
+            r'(?P<local_span>[^\s]+)\s+'
+            r'(?P<primary_identifier>[^\s]+)\s+'
+            r'(?P<primary_span>[^\s]+)\s+'
+            r'(?P<comp>c|)')
+    result = []
+    for line in lines:
+        matches = re.match(pattern, line)
+        if not matches:
+            raise EMBLFormatError(
+                "Could not parse AS line:\n%s" % line)
+        result.append(matches.groupdict())
+    return result
+
+
+def _serialize_as(header, obj, ind=5):
+    '''Serialize AS.
+
+    Parameters
+    ----------
+    obj : list
+    '''
+    yield 'XX\nAH   LOCAL_SPAN      PRIMARY_IDENTIFIER   PRIMARY_SPAN   COMP\n'
+    for ref in obj:
+        yield '{header:<{indent}}{}{}{}{}\n'.format(
+            header=header, indent=ind, info='; '.join(ref))
 
 
 def _parse_sq(lines):
@@ -1187,10 +1225,10 @@ _SERIALIZER_TABLE = {
     'OC': partial(_serialize_token_list, spacer_line=''),
     'OG': partial(_serialize_single_line, spacer_line=''),
     'RN': _serialize_rn, # includes RN, RC, RP, RX, RG, RA, RT, RL
-    # 'DR': _serialize_dr,
-    # 'CC': _serialize_cc,
-    # 'AS': _serialize_as,
-    # 'FT': _serialize_feature_table,
+    'DR': _serialize_dr,
+    'CC': _serialize_line_list,
+    'AS': _serialize_as,
+    'FT': _serialize_feature_table,
     # 'SQ': _serialize_sq,
     # 'CO': _serialize_co
 }
