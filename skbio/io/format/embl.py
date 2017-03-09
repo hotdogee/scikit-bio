@@ -774,6 +774,17 @@ def _parse_ac(lines):
                 for line in lines]))
 
 
+def _serialize_ac(header, obj, ind=5):
+    '''Serialize AC.
+
+    Parameters
+    ----------
+    obj : list
+    '''
+    prefix = '{header:<{indent}}'.format(header=header, indent=ind)
+    return indent(fill('; '.join(obj), width=80-ind), prefix) + ';\nXX\n'
+
+
 def _parse_pr(lines):
     '''Parse PR line. (0 or 1 per entry)
     The PR (PRoject) line shows the International Nucleotide Sequence Database
@@ -790,8 +801,19 @@ def _parse_pr(lines):
     '''
     if len(lines) > 1:
         raise EMBLFormatError(
-            "Expected 0 or 1 PR lines, found {:d}.".format(len(line)))
+            "Expected 0 or 1 PR lines, found {:d}.".format(len(lines)))
     return lines[0][5:].strip().rstrip(';')
+
+
+def _serialize_pr(header, obj, indent=5):
+    '''Serialize PR.
+
+    Parameters
+    ----------
+    obj : str
+    '''
+    return '{header:<{indent}}{obj};\nXX\n'.format(
+        header=header, obj=obj, indent=indent)
 
 
 def _parse_dt(lines):
