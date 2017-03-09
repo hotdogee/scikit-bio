@@ -443,6 +443,7 @@ References
 import re
 from functools import partial
 from itertools import chain
+from collections import OrderedDict
 
 from skbio.io import create_format, EMBLFormatError
 from skbio.io.format._base import (
@@ -636,52 +637,48 @@ def _parse_single_embl(chunks):
     return sequence, metadata, interval_metadata
 
 
-# def _serialize_single_embl(obj, fh):
-#     '''Write a EMBL record.
+def _serialize_single_embl(obj, fh):
+    '''Write a EMBL record.
 
-#     Always write it in EBI canonical way:
-#     1. sequence in lowercase
-#     2. 'u' as 't' even in RNA molecules.
+    Parameters
+    ----------
+    obj : Sequence or its child class
 
-#     Parameters
-#     ----------
-#     obj : Sequence or its child class
+    '''
+    # write out the headers
+    md = obj.metadata
+    for header, hgroup in _HEADERS:
+        serializer = _SERIALIZER_TABLE.get(
+            header, _serialize_section_default)
+        if header in md:
+            out = serializer(header, md[header])
+            # test if 'out' is a iterator.
+            # cf. Effective Python Item 17
+            if iter(out) is iter(out):
+                for s in out:
+                    fh.write(s)
+            else:
+                fh.write(out)
+        if header == 'FEATURES':
+            if obj.has_interval_metadata():
+                # magic number 21: the amount of indentation before
+                # feature table starts as defined by INSDC
+                indent = 21
+                fh.write('{header:<{indent}}Location/Qualifiers\n'.format(
+                    header=header, indent=indent))
+                for s in serializer(obj.interval_metadata._intervals, indent):
+                    fh.write(s)
+    # write out the sequence
+    # always write RNA seq as DNA
+    if isinstance(obj, RNA):
+        obj = obj.reverse_transcribe()
 
-#     '''
-#     # write out the headers
-#     md = obj.metadata
-#     for header in _HEADERS:
-#         serializer = _SERIALIZER_TABLE.get(
-#             header, _serialize_section_default)
-#         if header in md:
-#             out = serializer(header, md[header])
-#             # test if 'out' is a iterator.
-#             # cf. Effective Python Item 17
-#             if iter(out) is iter(out):
-#                 for s in out:
-#                     fh.write(s)
-#             else:
-#                 fh.write(out)
-#         if header == 'FEATURES':
-#             if obj.has_interval_metadata():
-#                 # magic number 21: the amount of indentation before
-#                 # feature table starts as defined by INSDC
-#                 indent = 21
-#                 fh.write('{header:<{indent}}Location/Qualifiers\n'.format(
-#                     header=header, indent=indent))
-#                 for s in serializer(obj.interval_metadata._intervals, indent):
-#                     fh.write(s)
-#     # write out the sequence
-#     # always write RNA seq as DNA
-#     if isinstance(obj, RNA):
-#         obj = obj.reverse_transcribe()
+    # always write in lowercase
+    seq_str = str(obj).lower()
 
-#     # always write in lowercase
-#     seq_str = str(obj).lower()
-
-#     for s in _serialize_origin(seq_str):
-#         fh.write(s)
-#     fh.write('//\n')
+    for s in _serialize_origin(seq_str):
+        fh.write(s)
+    fh.write('//\n')
 
 def _parse_id(lines):
     '''Parse ID line.
@@ -936,20 +933,14 @@ def _parse_rn(lines):
     ----------
     .. [1] ftp://ftp.ebi.ac.uk/pub/databases/embl/doc/usrman.txt
     '''
-    res = {
-        'RN': lines[0][5:],
-        'RC': [],
-        'RP': [],
-        'RX': [],
-        'RG': [],
-        'RA': [],
-        'RT': [],
-        'RL': []
-    }
+    result = OrderedDict()
+    result['RN'] = lines[0][5:]
     for line in lines[1:]:
-        res[line[:2]].append(line[5:])
-
-    return res
+        code, info = line[:2], line[5:]
+        if code not in result:
+            result[code] = []
+        result[code].append(info)
+    return result
 
 def _parse_dr(lines):
     '''Parse DR line. (>=0 per entry)
@@ -1087,5 +1078,24 @@ _PARSER_TABLE = {
     'FT': _parse_feature_table,
     'SQ': _parse_sq,
     'CO': _parse_co
+}
+
+_SERIALIZER_TABLE = {
+    'ID': _serialize_id,
+    'AC': _serialize_ac,
+    'PR': _serialize_pr,
+    'DT': _serialize_dt,
+    'DE': _serialize_de,
+    'KW': _serialize_kw,
+    'OS': _serialize_os,
+    'OC': _serialize_oc,
+    'OG': _serialize_og,
+    'RN': _serialize_rn, # includes RN, RC, RP, RX, RG, RA, RT, RL
+    'DR': _serialize_dr,
+    'CC': _serialize_cc,
+    'AS': _serialize_as,
+    'FT': _serialize_feature_table,
+    'SQ': _serialize_sq,
+    'CO': _serialize_co
 }
 
