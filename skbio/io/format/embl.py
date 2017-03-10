@@ -824,7 +824,7 @@ def _parse_dt(lines):
     if len(lines) != 2:
         raise EMBLFormatError(
             "Expected 2 DT lines, found {:d}.".format(len(lines)))
-    return [line[5:] for line in lines]
+    return [line[5:].rstrip() for line in lines]
 
 
 def _serialize_line_list(header, obj, ind=5):
@@ -854,7 +854,7 @@ def _parse_de(lines):
     ----------
     .. [1] ftp://ftp.ebi.ac.uk/pub/databases/embl/doc/usrman.txt
     '''
-    return [line[5:] for line in lines]
+    return [line[5:].rstrip() for line in lines]
 
 def _parse_kw(lines):
     '''Parse KW line. (>=1 per entry)
@@ -929,7 +929,7 @@ def _parse_os(lines):
     ----------
     .. [1] ftp://ftp.ebi.ac.uk/pub/databases/embl/doc/usrman.txt
     '''
-    return [line[5:] for line in lines]
+    return [line[5:].rstrip() for line in lines]
 
 def _parse_oc(lines):
     '''Parse OC line. (>=1 per entry)
@@ -1076,7 +1076,7 @@ def _parse_cc(lines):
     ----------
     .. [1] ftp://ftp.ebi.ac.uk/pub/databases/embl/doc/usrman.txt
     '''
-    return [line[5:] for line in lines]
+    return [line[5:].rstrip() for line in lines]
 
 
 def _parse_as(lines):
@@ -1215,7 +1215,7 @@ def _parse_co(lines):
     ----------
     .. [1] ftp://ftp.ebi.ac.uk/pub/databases/embl/doc/usrman.txt
     '''
-    return [line[5:] for line in lines]
+    return [line[5:].rstrip() for line in lines]
 
 
 _PARSER_TABLE = {
