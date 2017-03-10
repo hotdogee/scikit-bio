@@ -1187,7 +1187,7 @@ def _serialize_sq(obj, seq):
     for i in range(0, len(seq), line_size):
         line = seq[i:i+line_size]
         n += len(line)
-        s = '     {s}{n:>{ind}}\n'.format(
+        s = '     {s:<65}{n:>{ind}}\n'.format(
             n=n, ind=ind, s=chunk_str(line, frag_size, ' '))
         yield s
 
