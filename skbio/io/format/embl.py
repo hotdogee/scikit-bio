@@ -533,30 +533,30 @@ def _embl_to_protein(fh, seq_num=1, **kwargs):
     return _construct(record, Protein, **kwargs)
 
 
-# @embl.writer(None)
-# def _generator_to_embl(obj, fh):
-#     for obj_i in obj:
-#         _serialize_single_embl(obj_i, fh)
+@embl.writer(None)
+def _generator_to_embl(obj, fh):
+    for obj_i in obj:
+        _serialize_single_embl(obj_i, fh)
 
 
-# @embl.writer(Sequence)
-# def _sequence_to_embl(obj, fh):
-#     _serialize_single_embl(obj, fh)
+@embl.writer(Sequence)
+def _sequence_to_embl(obj, fh):
+    _serialize_single_embl(obj, fh)
 
 
-# @embl.writer(DNA)
-# def _dna_to_embl(obj, fh):
-#     _serialize_single_embl(obj, fh)
+@embl.writer(DNA)
+def _dna_to_embl(obj, fh):
+    _serialize_single_embl(obj, fh)
 
 
-# @embl.writer(RNA)
-# def _rna_to_embl(obj, fh):
-#     _serialize_single_embl(obj, fh)
+@embl.writer(RNA)
+def _rna_to_embl(obj, fh):
+    _serialize_single_embl(obj, fh)
 
 
-# @embl.writer(Protein)
-# def _protein_to_embl(obj, fh):
-#     _serialize_single_embl(obj, fh)
+@embl.writer(Protein)
+def _protein_to_embl(obj, fh):
+    _serialize_single_embl(obj, fh)
 
 
 def _construct(record, constructor=None, **kwargs):
@@ -652,7 +652,26 @@ def _serialize_single_embl(obj, fh):
     for header, hgroup in _HEADERS:
         serializer = _SERIALIZER_TABLE.get(
             header, _serialize_section_default)
-        if header in md:
+        if header == 'FT':
+            if obj.has_interval_metadata():
+                fh.write('XX\n{code:<{ind}}{key:<16}Location/Qualifiers\n{code}\n'.format(
+                    code='FH', ind=5, key='Key'))
+                indent = 19
+                for s in serializer(obj.interval_metadata._intervals, indent):
+                    fh.write(header + s)
+        elif header == 'SQ':
+            # write out the sequence
+            # always write RNA seq as DNA
+            if isinstance(obj, RNA):
+                obj = obj.reverse_transcribe()
+
+            # always write in lowercase
+            seq_str = str(obj).lower()
+
+            for s in _serialize_sq(md[header], seq_str):
+                fh.write(s)
+            fh.write('//\n')
+        elif header in md:
             out = serializer(header, md[header])
             # test if 'out' is a iterator.
             # cf. Effective Python Item 17
@@ -661,26 +680,6 @@ def _serialize_single_embl(obj, fh):
                     fh.write(s)
             else:
                 fh.write(out)
-        if header == 'FEATURES':
-            if obj.has_interval_metadata():
-                # magic number 21: the amount of indentation before
-                # feature table starts as defined by INSDC
-                indent = 21
-                fh.write('{header:<{indent}}Location/Qualifiers\n'.format(
-                    header=header, indent=indent))
-                for s in serializer(obj.interval_metadata._intervals, indent):
-                    fh.write(s)
-    # write out the sequence
-    # always write RNA seq as DNA
-    if isinstance(obj, RNA):
-        obj = obj.reverse_transcribe()
-
-    # always write in lowercase
-    seq_str = str(obj).lower()
-
-    for s in _serialize_origin(seq_str):
-        fh.write(s)
-    fh.write('//\n')
 
 
 def _parse_id(lines):
@@ -746,7 +745,7 @@ def _serialize_id(header, obj, indent=5):
     '''
     # use 'or' to convert None to ''
     kwargs = {k: v or '' for k, v in obj.items()}
-    
+
     return ('{header:<{indent}}{accession}; SV {seq_version}; {topology}; '
             '{mol_type}; {data_class}; {tax_division}; {size} BP.\n').format(
                 header=header, indent=indent, **kwargs)
@@ -1170,6 +1169,29 @@ def _parse_sq(lines):
     return (summary, sequence)
 
 
+def _serialize_sq(obj, seq):
+    '''Serialize SQ.
+
+    Parameters
+    ----------
+    obj : dict
+    seq : str
+    '''
+    yield 'XX\n'
+    yield ('SQ   Sequence {total} BP; {a} A; {c} C; '
+           '{g} G; {t} T; {other} other;\n').format(**obj)
+    n = 0
+    ind = 10
+    line_size = 60
+    frag_size = 10
+    for i in range(0, len(seq), line_size):
+        line = seq[i:i+line_size]
+        n += len(line)
+        s = '     {s}{n:>{ind}}\n'.format(
+            n=n, ind=ind, s=chunk_str(line, frag_size, ' '))
+        yield s
+
+
 def _parse_co(lines):
     '''Parse CO line. (0 or >=1 per entry)
     Con(structed) sequences in the CON data classes represent complete
@@ -1230,7 +1252,6 @@ _SERIALIZER_TABLE = {
     'CC': _serialize_line_list,
     'AS': _serialize_as,
     'FT': _serialize_feature_table,
-    # 'SQ': _serialize_sq,
-    # 'CO': _serialize_co
+    'SQ': _serialize_sq,
+    'CO': _serialize_line_list
 }
-
