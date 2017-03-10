@@ -656,18 +656,17 @@ def _serialize_single_embl(obj, fh):
             if obj.has_interval_metadata():
                 fh.write('XX\n{code:<{ind}}{key:<16}Location/Qualifiers\n{code}\n'.format(
                     code='FH', ind=5, key='Key'))
-                indent = 19
-                for s in serializer(obj.interval_metadata._intervals, indent):
-                    fh.write(header + s)
+                ind = 21
+                for s in serializer(obj.interval_metadata._intervals, ind):
+                    for ft in s.splitlines(True):
+                        fh.write(header + ft[2:])
         elif header == 'SQ':
             # write out the sequence
             # always write RNA seq as DNA
             if isinstance(obj, RNA):
                 obj = obj.reverse_transcribe()
-
             # always write in lowercase
             seq_str = str(obj).lower()
-
             for s in _serialize_sq(md[header], seq_str):
                 fh.write(s)
             fh.write('//\n')
